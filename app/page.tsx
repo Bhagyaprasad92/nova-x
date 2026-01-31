@@ -19,7 +19,7 @@ const fadeIn = {
 
 export default function Home() {
   return (
-    <main className="relative bg-nova-black text-white min-h-[400vh]">
+    <main className="relative text-white min-h-[400vh]">
       <Navbar />
 
       {/* The sticky canvas background */}

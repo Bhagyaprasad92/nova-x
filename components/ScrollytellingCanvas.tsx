@@ -46,7 +46,10 @@ export default function ScrollytellingCanvas() {
                 const img = new Image();
                 img.src = src;
                 img.onload = () => resolve(img);
-                img.onerror = reject;
+                img.onerror = (e) => {
+                    console.error("Failed to load", src, e);
+                    reject(e);
+                };
             });
         });
 
@@ -60,8 +63,12 @@ export default function ScrollytellingCanvas() {
             const frameArray = new Array(TOTAL_FRAMES).fill(null).map((_, i) => {
                 const src = getFrameSource(i);
                 // Find the loaded image with this src
-                return results.find(img => img.src.endsWith(src.split('/').pop()!)) || results[0];
+                const match = results.find(img => img.src.includes(src.split('/').pop()!));
+                if (!match && i === 0) console.log("Missing image for", src);
+                return match || results[0];
             });
+            
+            console.log("Images loaded:", results.length);
             
             setImages(frameArray);
             setLoaded(true);
@@ -141,7 +148,7 @@ export default function ScrollytellingCanvas() {
   }, [loaded]);
 
   return (
-    <div className="sticky top-0 w-full h-screen overflow-hidden -z-10">
+    <div className="fixed top-0 left-0 w-full h-full -z-0">
       <canvas
         ref={canvasRef}
         className="block w-full h-full bg-nova-black"
